@@ -57,25 +57,27 @@ class level:
 		if blockcollide:
 			for rectagle in self.tiles.sprites():
 				if rectagle.rect.colliderect(self.player.sprite.rect):
-					if self.player.sprite.direction.x<0:
-						self.player.sprite.rect.left = rectagle.rect.right
-					elif self.player.sprite.direction.x>0:
-						self.player.sprite.rect.right = rectagle.rect.left
-						
-			for rectagle in self.tiles.sprites():
-				if rectagle.rect.colliderect(self.player.sprite.rect):
 					if self.player.sprite.direction.y<0:
 						self.player.sprite.rect.top = rectagle.rect.bottom
 						
 					elif self.player.sprite.direction.y>0:
 						self.player.sprite.rect.bottom = rectagle.rect.top
 						self.player.sprite.direction.y = 0
+			for rectagle in self.tiles.sprites():
+				if rectagle.rect.colliderect(self.player.sprite.rect):
+					if self.player.sprite.direction.x<0:
+						self.player.sprite.rect.left = rectagle.rect.right
+					elif self.player.sprite.direction.x>0:
+						self.player.sprite.rect.right = rectagle.rect.left
+						
+			
 	def loadlevel(self):
+		self.collide()
 		self.tiles.update(self.xshift, self.yshift)
 		self.tiles.draw(self.screen)
 		self.player.draw(self.screen)
 		self.movex()
 		self.movey()
-		self.collide()
+		
 
 	

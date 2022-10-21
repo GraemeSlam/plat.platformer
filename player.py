@@ -1,4 +1,6 @@
 import pygame
+from animate import *
+import os
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from pygame.locals import (
 	K_UP,
@@ -7,6 +9,8 @@ from pygame.locals import (
 	K_RIGHT,
 	K_LSHIFT
 )
+runsheet = Spritesheet(os.path.join("dog_run_strip8_2.png"))
+idlesheet = Spritesheet(os.path.join("dog_idle_strip8_2.png"))
 class player (pygame.sprite.Sprite):
 	def __init__(self, pos):
 		super(player, self).__init__()
@@ -14,17 +18,16 @@ class player (pygame.sprite.Sprite):
 		self.yspeed = 5
 		self.gravity = 0.7
 		self.health = 100
-		self.image = pygame.image.load("dog.png")
+		self.animation = 0
+		self.image = runsheet.get_sprite(60*0, 0, 60, 60)
 		self.rect = self.image.get_rect(topleft = pos)
 		self.direction = pygame.math.Vector2(0,0)
+		self.rect.inflate_ip(0, -36)
 	def update(self, pressed_keys):
 		
 		if pressed_keys[K_UP]:
 			self.direction.y = -9
-		'''
-		else: 
-			self.direction.y = 0
-		'''
+
 		if pressed_keys[K_LEFT]:
 			self.direction.x= -1
 		elif pressed_keys[K_RIGHT]:
@@ -46,6 +49,15 @@ class player (pygame.sprite.Sprite):
 		elif self.gravity > 0:
 			self.direction.y= 1
 	    '''
+		if round(self.direction.x) != 0:
+			self.image = runsheet.get_sprite(60*round(self.animation), 26, 60, 39)
+			print("run")
+		elif round(self.direction.x) == 0:
+			self.image = idlesheet.get_sprite(60*round(self.animation), 23, 60, 36)
+			print("idle")
+		self.animation+=0.5
+		if self.animation > 7:
+			self.animation = 0
 		#self.rect.y += self.gravity
 		#self.gravity += abs(self.gravity/10)+0.1
 		self.direction.y += self.gravity
