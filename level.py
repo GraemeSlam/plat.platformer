@@ -2,6 +2,7 @@ import pygame
 from tiles import *
 from player import *
 from settings import tilesize
+from random import randint
 class level:
 	def __init__(self, text, screen):
 		self.text = text
@@ -27,8 +28,18 @@ class level:
 				elif symbol == "2":
 					x = symbol_index*tilesize
 					y = row_index*tilesize
-					Fox = player((x, y))
+					Fox = player((x+5, y))
 					self.player.add(Fox)
+				elif symbol == "3":
+					x = symbol_index*tilesize+randint(0,25)
+					y = row_index*tilesize+24
+					Tile = tile((x, y), tilesize, 3)
+					self.tiles.add(Tile)
+				elif symbol == "4":
+					x = symbol_index*tilesize
+					y = row_index*tilesize+8
+					Tile = tile((x, y), tilesize, 4)
+					self.tiles.add(Tile)
 	def movex (self):
 		player = self.player.sprite
 		if player.rect.centerx < 200 and player.direction.x < 0:
@@ -62,7 +73,10 @@ class level:
 						
 					elif self.player.sprite.direction.y>0:
 						self.player.sprite.rect.bottom = rectagle.rect.top
-						self.player.sprite.direction.y = 0
+						if rectagle.spr == 4:
+							self.player.sprite.direction.y = -15
+						else: 
+							self.player.sprite.direction.y = 0
 			for rectagle in self.tiles.sprites():
 				if rectagle.rect.colliderect(self.player.sprite.rect):
 					if self.player.sprite.direction.x<0:
