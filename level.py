@@ -40,6 +40,11 @@ class level:
 					y = row_index*tilesize+8
 					Tile = tile((x, y), tilesize, 4)
 					self.tiles.add(Tile)
+				elif symbol == "5":
+					x = symbol_index*tilesize
+					y = row_index*tilesize-16
+					Tile = tile((x, y), tilesize, 5)
+					self.tiles.add(Tile)
 	def movex (self):
 		player = self.player.sprite
 		if player.rect.centerx < 200 and player.direction.x < 0:
@@ -74,16 +79,33 @@ class level:
 					elif self.player.sprite.direction.y>0:
 						self.player.sprite.rect.bottom = rectagle.rect.top
 						if rectagle.spr == 4:
-							self.player.sprite.direction.y = -15
-						else: 
+							
+							if rectagle.active:
+								self.player.sprite.direction.y = -15
+								rectagle.active = False
+								rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
+
+
+							elif rectagle.active == False:
+								rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
+								self.player.sprite.direction.y = -5
+
+						else:
 							self.player.sprite.direction.y = 0
+
+
 			for rectagle in self.tiles.sprites():
 				if rectagle.rect.colliderect(self.player.sprite.rect):
 					if self.player.sprite.direction.x<0:
 						self.player.sprite.rect.left = rectagle.rect.right
+						if rectagle.spr == 5: 
+							self.player.sprite.direction.y = -5
+							self.player.sprite.direction.x = -5
 					elif self.player.sprite.direction.x>0:
 						self.player.sprite.rect.right = rectagle.rect.left
-						
+						if rectagle.spr == 5: 
+							self.player.sprite.direction.y = 5
+							self.player.sprite.direction.x = 5
 			
 	def loadlevel(self):
 		self.collide()

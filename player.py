@@ -34,7 +34,7 @@ class player (pygame.sprite.Sprite):
 			self.direction.x= -1
 		elif pressed_keys[K_RIGHT]:
 			self.direction.x = 1
-		else: 
+		elif self.direction.x >= -1 and self.direction.x <= 1: 
 			self.direction.x = 0
 		if self.direction.x == 0:
 			if pressed_keys[K_LSHIFT]:
@@ -53,7 +53,6 @@ class player (pygame.sprite.Sprite):
 	    '''
 		if round(self.direction.y) != 0:
 			self.image = jumpsheet.get_sprite(60*round(self.animation)+7, 28, 40, 30)
-			print("jump")
 		if round(self.direction.x) != 0 and self.direction.x > 0:
 			self.image = runsheet.get_sprite(60*round(self.animation)+7, 28, 40, 30)
 		elif round(self.direction.x) != 0 and self.direction.x < 0:

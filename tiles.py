@@ -18,8 +18,18 @@ class tile (pygame.sprite.Sprite):
 			print("Mush")
 		elif self.spr == 4:
 			self.image = BounceSheet.get_sprite(30, 0, 32, 32)
+			self.counter = 0
+			self.active = True
+		elif self.spr == 5:
+			self.image = pygame.image.load("Mushroom_Warrior.png")
 		self.rect = self.image.get_rect(topleft = pos)
 		
 	def update (self, x, y):
 		self.rect.x += x
 		self.rect.y += y
+		if self.spr == 4 and not self.active:
+			self.counter +=1
+			if self.counter == 300:
+				self.active = True
+				self.counter = 0
+				self.image = BounceSheet.get_sprite(32, 0, 30, 32)
