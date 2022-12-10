@@ -15,36 +15,22 @@ class level:
 		self.player = pygame.sprite.GroupSingle()
 		for row_index,row in enumerate(self.text):
 			for symbol_index,symbol in enumerate(row):
-				if symbol == "0":
-					x = symbol_index*tilesize
-					y = row_index*tilesize
-					Tile = tile((x, y), tilesize, 0)
-					self.tiles.add(Tile)
-				elif symbol == "1":
-					x = symbol_index*tilesize
-					y = row_index*tilesize
-					Tile = tile((x, y), tilesize, 1)
-					self.tiles.add(Tile)
-				elif symbol == "2":
-					x = symbol_index*tilesize
-					y = row_index*tilesize
+				x = symbol_index*tilesize
+				y = row_index*tilesize
+
+				if symbol == "2":
+					y+=24
 					Fox = player((x+5, y))
 					self.player.add(Fox)
-				elif symbol == "3":
-					x = symbol_index*tilesize+randint(0,25)
-					y = row_index*tilesize+24
-					Tile = tile((x, y), tilesize, 3)
-					self.tiles.add(Tile)
-				elif symbol == "4":
-					x = symbol_index*tilesize
-					y = row_index*tilesize+8
-					Tile = tile((x, y), tilesize, 4)
-					self.tiles.add(Tile)
-				elif symbol == "5":
-					x = symbol_index*tilesize
-					y = row_index*tilesize-16
-					Tile = tile((x, y), tilesize, 5)
-					self.tiles.add(Tile)
+				elif symbol == "M":
+					y+=8
+				elif symbol == "W":
+					y-=16
+				elif symbol == "m":
+					x+=randint(0,25)
+					y+=24
+				Tile = tile((x, y), tilesize, symbol)
+				self.tiles.add(Tile)
 	def movex (self):
 		player = self.player.sprite
 		if player.rect.centerx < 200 and player.direction.x < 0:
@@ -67,18 +53,18 @@ class level:
 		else:
 			self.yshift = 0
 			player.yspeed = 5
-	def collide(self):
+	def collideY(self):
 		blockcollide = pygame.sprite.groupcollide(self.tiles, self.player,False, False)
 		
 		if blockcollide:
 			for rectagle in self.tiles.sprites():
-				if rectagle.rect.colliderect(self.player.sprite.rect):
-					if self.player.sprite.direction.y<0:
+				if rectagle.rect.colliderect(self.player.sprite.rect) and not rectagle.intangible:
+					if self.player.sprite.direction.y<0 and not rectagle.semisolid:
 						self.player.sprite.rect.top = rectagle.rect.bottom
 						
 					elif self.player.sprite.direction.y>0:
 						self.player.sprite.rect.bottom = rectagle.rect.top
-						if rectagle.spr == 4:
+						if rectagle.spr == "M":
 							
 							if rectagle.active:
 								self.player.sprite.direction.y = -15
@@ -93,22 +79,26 @@ class level:
 						else:
 							self.player.sprite.direction.y = 0
 
-
+	def collideX(self):
+		blockcollide = pygame.sprite.groupcollide(self.tiles, self.player,False, False)
+							
+		if blockcollide:
 			for rectagle in self.tiles.sprites():
-				if rectagle.rect.colliderect(self.player.sprite.rect):
-					if self.player.sprite.direction.x<0:
+				if rectagle.rect.colliderect(self.player.sprite.rect)and not rectagle.intangible:
+					if self.player.sprite.direction.x<0 and not rectagle.semisolid:
 						self.player.sprite.rect.left = rectagle.rect.right
-						if rectagle.spr == 5: 
+						if rectagle.spr == "W": 
 							self.player.sprite.direction.y = -5
 							self.player.sprite.direction.x = -5
-					elif self.player.sprite.direction.x>0:
+					elif self.player.sprite.direction.x>0 and not rectagle.semisolid:
 						self.player.sprite.rect.right = rectagle.rect.left
-						if rectagle.spr == 5: 
+						if rectagle.spr == "W": 
 							self.player.sprite.direction.y = 5
 							self.player.sprite.direction.x = 5
 			
 	def loadlevel(self):
-		self.collide()
+		self.collideY()
+		self.collideX()
 		self.tiles.update(self.xshift, self.yshift)
 		self.tiles.draw(self.screen)
 		self.player.draw(self.screen)

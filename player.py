@@ -1,5 +1,6 @@
 import pygame
 from animate import *
+from settings import path
 import os
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from pygame.locals import (
@@ -9,9 +10,9 @@ from pygame.locals import (
 	K_RIGHT,
 	K_LSHIFT
 )
-runsheet = Spritesheet(os.path.join("dog_run_strip8_2.png"))
-idlesheet = Spritesheet(os.path.join("dog_idle_strip8_2.png"))
-jumpsheet = Spritesheet(os.path.join("dog_jump_strip8_2.png"))
+runsheet = Spritesheet(os.path.join(path+"dog_run_strip8_2.png"))
+idlesheet = Spritesheet(os.path.join(path+"dog_idle_strip8_2.png"))
+jumpsheet = Spritesheet(os.path.join(path+"dog_jump_strip8_2.png"))
 class player (pygame.sprite.Sprite):
 	def __init__(self, pos):
 		super(player, self).__init__()

@@ -1,0 +1,15 @@
+. = air
+d = dirt
+g = grass
+2 = player
+m = mushroom
+M = bounce mushroom
+W = mushroom warrior
+q = quartz floor
+Q = Decorative quartz
+p = quartz pillar
+P = dark quartz pillar
+c = cloud
+C = quartz Chest
+s = sand
+w = water
