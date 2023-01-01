@@ -33,6 +33,7 @@ class tile (pygame.sprite.Sprite):
 			self.image = pygame.image.load(path+"Mushroom_Warrior.png")
 		elif self.spr == "m":
 			self.image = MushSheet.get_sprite(16*randint(0,5), 0, 15, 16)
+			self.intangible = True
 		elif self.spr == "q":
 			self.image = pygame.image.load(path+"QuartzFloor.png")
 		elif self.spr == "p":

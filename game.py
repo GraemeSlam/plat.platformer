@@ -21,7 +21,7 @@ while running:
 	screen.blit(Background, (0,0))
 	pressed_keys = pygame.key.get_pressed()
 	testlevel.player.update(pressed_keys)
-	testlevel.loadlevel()
+	testlevel.loadlevel(pressed_keys)
 	pygame.display.update()
 pygame.quit()
 sys.exit()

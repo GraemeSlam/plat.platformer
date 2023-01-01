@@ -3,6 +3,9 @@ from tiles import *
 from player import *
 from settings import tilesize
 from random import randint
+from pygame.locals import (
+	K_r,
+)
 class level:
 	def __init__(self, text, screen):
 		self.text = text
@@ -54,49 +57,50 @@ class level:
 			self.yshift = 0
 			player.yspeed = 5
 	def collideY(self):
-		blockcollide = pygame.sprite.groupcollide(self.tiles, self.player,False, False)
-		
-		if blockcollide:
-			for rectagle in self.tiles.sprites():
-				if rectagle.rect.colliderect(self.player.sprite.rect) and not rectagle.intangible:
-					if self.player.sprite.direction.y<0 and not rectagle.semisolid:
-						self.player.sprite.rect.top = rectagle.rect.bottom
+		player = self.player.sprite
+		player.direction.y += player.gravity
+		player.rect.y+= player.direction.y
+		for rectagle in self.tiles.sprites():
+			if rectagle.rect.colliderect(self.player.sprite.rect) and not rectagle.intangible:
+				if self.player.sprite.direction.y<0 and not rectagle.semisolid:
+					self.player.sprite.rect.top = rectagle.rect.bottom
+					player.direction.y = 0
+				elif self.player.sprite.direction.y>0:
+					self.player.sprite.rect.bottom = rectagle.rect.top
+					player.direction.y = 0
+					player.grounded = True
+					if rectagle.spr == "M":
 						
-					elif self.player.sprite.direction.y>0:
-						self.player.sprite.rect.bottom = rectagle.rect.top
-						if rectagle.spr == "M":
-							
-							if rectagle.active:
-								self.player.sprite.direction.y = -15
-								rectagle.active = False
-								rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
+						if rectagle.active:
+							self.player.sprite.direction.y = -15
+							rectagle.active = False
+							rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
 
-
-							elif rectagle.active == False:
-								rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
-								self.player.sprite.direction.y = -5
-
-						else:
-							self.player.sprite.direction.y = 0
-
-	def collideX(self):
-		blockcollide = pygame.sprite.groupcollide(self.tiles, self.player,False, False)
-							
-		if blockcollide:
-			for rectagle in self.tiles.sprites():
-				if rectagle.rect.colliderect(self.player.sprite.rect)and not rectagle.intangible:
-					if self.player.sprite.direction.x<0 and not rectagle.semisolid:
-						self.player.sprite.rect.left = rectagle.rect.right
-						if rectagle.spr == "W": 
+						elif rectagle.active == False:
+							rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
 							self.player.sprite.direction.y = -5
-							self.player.sprite.direction.x = -5
-					elif self.player.sprite.direction.x>0 and not rectagle.semisolid:
-						self.player.sprite.rect.right = rectagle.rect.left
-						if rectagle.spr == "W": 
-							self.player.sprite.direction.y = 5
-							self.player.sprite.direction.x = 5
-			
-	def loadlevel(self):
+	
+	def collideX(self):
+		player = self.player.sprite
+		player.rect.x+= player.direction.x*player.xspeed
+		for rectagle in self.tiles.sprites():
+			if rectagle.rect.colliderect(self.player.sprite.rect)and not rectagle.intangible:
+				if self.player.sprite.direction.x<0 and not rectagle.semisolid:
+					self.player.sprite.rect.left = rectagle.rect.right
+					player.direction.x = 0
+					if rectagle.spr == "W": 
+						self.player.sprite.direction.y = -5
+						self.player.sprite.direction.x = 5
+				elif self.player.sprite.direction.x>0 and not rectagle.semisolid:
+					self.player.sprite.rect.right = rectagle.rect.left
+					player.direction.x = 0
+					if rectagle.spr == "W": 
+						self.player.sprite.direction.y = -5
+						self.player.sprite.direction.x = -5
+	def reload(self, pressed_keys):
+		if pressed_keys[K_r]:
+			self.createlevel()
+	def loadlevel(self, pressed_keys):
 		self.collideY()
 		self.collideX()
 		self.tiles.update(self.xshift, self.yshift)
@@ -104,6 +108,7 @@ class level:
 		self.player.draw(self.screen)
 		self.movex()
 		self.movey()
+		self.reload(pressed_keys)
 		
 
 	
