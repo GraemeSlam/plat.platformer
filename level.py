@@ -6,6 +6,10 @@ from random import randint
 from pygame.locals import (
 	K_r,
 )
+ding = pygame.mixer.Sound(os.path.join(path+"Sounds/"+"ding.mp3"))
+jump = pygame.mixer.Sound(os.path.join(path+"Sounds/"+"jump.mp3"))
+ding.set_volume(0.5)
+jump.set_volume(0.5)
 class level:
 	def __init__(self, text, screen):
 		self.text = text
@@ -32,6 +36,8 @@ class level:
 				elif symbol == "m":
 					x+=randint(0,25)
 					y+=24
+				elif symbol == "w":
+					y+=2
 				Tile = tile((x, y), tilesize, symbol)
 				self.tiles.add(Tile)
 	def movex (self):
@@ -56,21 +62,54 @@ class level:
 		else:
 			self.yshift = 0
 			player.yspeed = 5
+	def collideX(self):
+		player = self.player.sprite
+		player.rect.x+= player.direction.x*player.xspeed
+		for rectagle in self.tiles.sprites():
+			if rectagle.rect.colliderect(self.player.sprite.rect)and not rectagle.intangible and not rectagle.fluid:
+				print("text")
+				if (self.player.sprite.direction.x<0 or self.xshift>0) and not rectagle.semisolid :
+					print("collide")
+					self.player.sprite.rect.left = rectagle.rect.right
+					player.direction.x = 0
+					if rectagle.spr == "W": 
+						self.player.sprite.direction.y = -5
+						self.player.sprite.direction.x = 5
+				elif (self.player.sprite.direction.x>0 or self.xshift<0) and not rectagle.semisolid :
+					print("collide")
+					self.player.sprite.rect.right = rectagle.rect.left
+					player.direction.x = 0
+					if rectagle.spr == "W": 
+						self.player.sprite.direction.y = -5
+						self.player.sprite.direction.x = -5
+			elif rectagle.rect.colliderect(self.player.sprite.rect)and rectagle.coin:
+				rectagle.image = pygame.image.load(path+"empty.png")
+				rectagle.spr == "."
+				rectagle.coin = False
+				player.paws+=rectagle.value
+				pygame.mixer.Sound.play(ding)
 	def collideY(self):
 		player = self.player.sprite
 		player.direction.y += player.gravity
 		player.rect.y+= player.direction.y
 		for rectagle in self.tiles.sprites():
 			if rectagle.rect.colliderect(self.player.sprite.rect) and not rectagle.intangible:
-				if self.player.sprite.direction.y<0 and not rectagle.semisolid:
-					self.player.sprite.rect.top = rectagle.rect.bottom
+				if self.player.sprite.direction.y<0 and not rectagle.semisolid :
+					if not rectagle.fluid:
+						self.player.sprite.rect.top = rectagle.rect.bottom
 					player.direction.y = 0
+					if rectagle.fluid:
+						player.direction.y = 1
 				elif self.player.sprite.direction.y>0:
-					self.player.sprite.rect.bottom = rectagle.rect.top
+					if not rectagle.fluid:
+						self.player.sprite.rect.bottom = rectagle.rect.top
 					player.direction.y = 0
-					player.grounded = True
+					if rectagle.fluid:
+						player.direction.y = 1
+					if not rectagle.spr == "M":
+						player.toggleable["grounded"] = True
 					if rectagle.spr == "M":
-						
+						pygame.mixer.Sound.play(jump)
 						if rectagle.active:
 							self.player.sprite.direction.y = -15
 							rectagle.active = False
@@ -80,35 +119,22 @@ class level:
 							rectagle.image = BounceSheet.get_sprite(0, 0, 30, 32)
 							self.player.sprite.direction.y = -5
 	
-	def collideX(self):
-		player = self.player.sprite
-		player.rect.x+= player.direction.x*player.xspeed
-		for rectagle in self.tiles.sprites():
-			if rectagle.rect.colliderect(self.player.sprite.rect)and not rectagle.intangible:
-				if self.player.sprite.direction.x<0 and not rectagle.semisolid:
-					self.player.sprite.rect.left = rectagle.rect.right
-					player.direction.x = 0
-					if rectagle.spr == "W": 
-						self.player.sprite.direction.y = -5
-						self.player.sprite.direction.x = 5
-				elif self.player.sprite.direction.x>0 and not rectagle.semisolid:
-					self.player.sprite.rect.right = rectagle.rect.left
-					player.direction.x = 0
-					if rectagle.spr == "W": 
-						self.player.sprite.direction.y = -5
-						self.player.sprite.direction.x = -5
+
 	def reload(self, pressed_keys):
 		if pressed_keys[K_r]:
 			self.createlevel()
 	def loadlevel(self, pressed_keys):
-		self.collideY()
-		self.collideX()
+
+
+		print(self.xshift)
 		self.tiles.update(self.xshift, self.yshift)
 		self.tiles.draw(self.screen)
 		self.player.draw(self.screen)
+		self.reload(pressed_keys)
+		self.collideY()
+		self.collideX()
 		self.movex()
 		self.movey()
-		self.reload(pressed_keys)
 		
 
 	

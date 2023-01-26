@@ -12,13 +12,31 @@ class tile (pygame.sprite.Sprite):
 		self.spr = spr
 		self.intangible = False
 		self.semisolid = False
-
+		self.fluid = False
+		self.coin = False
 		self.image = pygame.image.load(path+"empty.png")
 		if self.spr == ".":
 			self.intangible = True
-		
+		if self.spr == "3":
+			self.image = pygame.image.load(path+"bronzepaw.png")
+			self.coin = True
+			self.intangible = True
+			self.value = 10
+		if self.spr == "4":
+			self.image = pygame.image.load(path+"silverpaw.png")
+			self.coin = True
+			self.intangible = True
+			self.value = 100
+		if self.spr == "5":
+			self.image = pygame.image.load(path+"goldpaw.png")
+			self.coin = True
+			self.intangible = True
+			self.value = 1000
 		elif self.spr == "d":
 			self.image = pygame.image.load(path+"dirtblock.png")
+		elif self.spr == "D":
+			self.image = pygame.image.load(path+"dirtback.png")
+			self.intangible = True
 		elif self.spr == "g":
 			self.image = pygame.image.load(path+"grassblock.png")
 		elif self.spr == "2":
@@ -48,9 +66,11 @@ class tile (pygame.sprite.Sprite):
 			self.image = pygame.image.load(path+"QuartzChest.png")
 		elif self.spr == "s":
 			self.image = pygame.image.load(path+"Sand.png")
+		elif self.spr == "S":
+			self.image = pygame.image.load(path+"Stone.png")
 		elif self.spr == "w":
 			self.image = pygame.image.load(path+"Water.png")
-			self.intangible = True
+			self.fluid = True
 		elif self.spr == "c":
 			self.image = pygame.image.load(path+"Cloud.png")
 			self.semisolid = True

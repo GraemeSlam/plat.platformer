@@ -13,3 +13,4 @@ c = cloud
 C = quartz Chest
 s = sand
 w = water
+S = stone
