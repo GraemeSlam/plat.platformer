@@ -71,9 +71,11 @@ class tile (pygame.sprite.Sprite):
 		elif self.spr == "w":
 			self.image = pygame.image.load(path+"Water.png")
 			self.fluid = True
+			self.image.set_alpha(160)
 		elif self.spr == "c":
 			self.image = pygame.image.load(path+"Cloud.png")
 			self.semisolid = True
+			self.image.set_alpha(210)
 		self.rect = self.image.get_rect(topleft = pos)
 		if self.spr == "c":
 			self.rect.inflate_ip(0, -35)

@@ -16,6 +16,7 @@ class level:
 		self.screen = screen
 		self.xshift = 0
 		self.yshift = 0
+		self.raining = False
 		self.createlevel()
 	def createlevel(self):
 		self.tiles = pygame.sprite.Group()
@@ -38,8 +39,9 @@ class level:
 					y+=24
 				elif symbol == "w":
 					y+=2
-				Tile = tile((x, y), tilesize, symbol)
-				self.tiles.add(Tile)
+				if not symbol == ".":
+					Tile = tile((x, y), tilesize, symbol)
+					self.tiles.add(Tile)
 	def movex (self):
 		player = self.player.sprite
 		if player.rect.centerx < 200 and player.direction.x < 0:
@@ -123,6 +125,7 @@ class level:
 	def reload(self, pressed_keys):
 		if pressed_keys[K_r]:
 			self.createlevel()
+			self.raining = not self.raining
 	def loadlevel(self, pressed_keys):
 
 

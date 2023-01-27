@@ -61,7 +61,7 @@ level1 = [
 	
 ]
 path = os.path.dirname(os.getcwd())+"/plat.platformer/Assets/"
-Backgrounds = {0:path+"Sky.png",1:path+"Sky.png"}
+Backgrounds = {0:path+"Sky.png",1:path+"Sky.png", 1.1:path+"Skydark.png"}
 tilesize = 40
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
