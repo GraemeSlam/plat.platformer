@@ -3,7 +3,6 @@ from animate import *
 from random import randint
 from settings import path
 import os
-print(os.getcwd())
 MushSheet = Spritesheet(os.path.join(path+"Mushroom_sheet.png"))
 BounceSheet = Spritesheet(os.path.join(path+"Bounce_Mushroom_sheet.png"))
 class tile (pygame.sprite.Sprite):
@@ -14,6 +13,7 @@ class tile (pygame.sprite.Sprite):
 		self.semisolid = False
 		self.fluid = False
 		self.coin = False
+		self.onewayl = False
 		self.image = pygame.image.load(path+"empty.png")
 		if self.spr == ".":
 			self.intangible = True
@@ -64,10 +64,13 @@ class tile (pygame.sprite.Sprite):
 			self.image = pygame.image.load(path+"DecorativeQuartz.png")
 		elif self.spr == "C":
 			self.image = pygame.image.load(path+"QuartzChest.png")
-		elif self.spr == "s":
+		elif self.spr == "a":
 			self.image = pygame.image.load(path+"Sand.png")
-		elif self.spr == "S":
+		elif self.spr == "s":
 			self.image = pygame.image.load(path+"Stone.png")
+		elif self.spr == "S":
+			self.image = pygame.image.load(path+"stoneback.png")
+			self.intangible = True
 		elif self.spr == "w":
 			self.image = pygame.image.load(path+"Water.png")
 			self.fluid = True
@@ -76,13 +79,22 @@ class tile (pygame.sprite.Sprite):
 			self.image = pygame.image.load(path+"Cloud.png")
 			self.semisolid = True
 			self.image.set_alpha(210)
+		elif self.spr == "x":
+			self.image = pygame.image.load(path+"empty.png")
 		self.rect = self.image.get_rect(topleft = pos)
 		if self.spr == "c":
 			self.rect.inflate_ip(0, -35)
+		if self.spr == "x":
+			self.onewayl = True
+			self.rect.inflate_ip(-35, 0)
 		
-	def update (self, x, y):
-		self.rect.x += x
-		self.rect.y += y
+	def update (self, x, y, precipitation):
+		self.rect.centerx += x
+		self.rect.centery += y
+		if self.spr == "g" and precipitation == 2:
+			self.image = pygame.image.load(path+"snowGrass.png")
+		if self.spr == "2" and precipitation == 2:
+			self.image = pygame.image.load(path+"snowStump.png")
 		if self.spr == "M" and not self.active:
 			self.counter +=1
 			if self.counter == self.Maxtime:

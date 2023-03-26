@@ -18,9 +18,13 @@ clock = pygame.time.Clock()
 rains = pygame.sprite.Group()
 running = True
 Background = pygame.image.load(Backgrounds[1])
-
 ADDRAIN = pygame.USEREVENT + 1
 pygame.time.set_timer(ADDRAIN, 10)
+pygame.mixer.music.load(os.path.join(path+"Sounds/"+"drip.mp3"))
+pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.play(-1)
+
+
 
 while running:
 	clock.tick (30)
@@ -28,17 +32,22 @@ while running:
 		if event.type == QUIT:
 			running = False
 	screen.fill((0, 105, 155))
-	if level1.raining: 
-		Background = pygame.image.load(Backgrounds[1.1])
+	if level1.precipitation: 
+		Background = pygame.image.load(Backgrounds[1+(level1.precipitation/10)])
+		
 	else:
 		Background = pygame.image.load(Backgrounds[1])
-	
+		pygame.mixer.music.pause()
+	if level1.precipitation == 1:
+		pygame.mixer.music.unpause()
+	if level1.precipitation == 2:
+		pygame.mixer.music.pause()
 	screen.blit(Background, (0,0))
 	pressed_keys = pygame.key.get_pressed()
-	if event.type == ADDRAIN and level1.raining:
-		new_rain = rain()
+	if event.type == ADDRAIN and level1.precipitation:
+		new_rain = rain(level1.precipitation)
 		rains.add(new_rain)
-	level1.player.update(pressed_keys)
+	level1.player.update(pressed_keys, level1.xshift)
 	level1.loadlevel(pressed_keys)
 	if level1.player.sprite.paws > 999:
 		money = retro.render(str(level1.player.sprite.paws), False, (255,255,255))
@@ -48,7 +57,7 @@ while running:
 		money = retro.render("00"+str(level1.player.sprite.paws), False, (255,255,255))
 	elif level1.player.sprite.paws < 10:
 		money = retro.render("000"+str(level1.player.sprite.paws), False, (255,255,255))
-	rains.update()
+	rains.update(level1.xshift/2)
 	for entity in rains:
 		screen.blit(entity.image, entity.rect)
 	splash = pygame.sprite.groupcollide(rains, level1.tiles, True, 
@@ -58,7 +67,7 @@ while running:
 	splash = list(splash.keys())
 	splash1 = list(splash1.keys())
 
-	if splash or splash1:
+	if (splash or splash1) and level1.precipitation == 1:
 		for thing in splash:
 			screen.blit(splashfx, thing.rect.center)
 		for thing in splash1:
